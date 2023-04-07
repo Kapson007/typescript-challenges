@@ -21,6 +21,11 @@ interface Video {
     length: number;
 }
 
+type Predicate = Book | Video;
+type ProcessedItem = {
+    [K in keyof Predicate]: Predicate[K]
+}
+
 const books: Book[] = [
     { id: 1, name: 'Our Friends from Frolix 8', author: 'Philip K. Dick' },
     { id: 2, name: 'When: The Scientific Secrets of Perfect Timing', author: 'Daniel H. Pink' },
@@ -36,11 +41,12 @@ const videos: Video[] = [
     { id: 5, name: 'Poznaj TypeScript', length: 22 }
 ]
 
-function processItems<T>(items: T[]): T[] {
+function processItems<T extends Predicate>(items: T[]): ProcessedItem[] {
     return items
-        .filter(({ id }) => id > 2)
-        .map(({ id, name }) => ({ id, name }));
+        .filter(({id}): boolean => id > 2)
+        .map(({id, name}): ProcessedItem => ({id, name}));
 }
+
 
 const processedBooks = processItems(books);
 const processedVideos = processItems(videos);
